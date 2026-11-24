@@ -1,0 +1,59 @@
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-huddle}
+      MYSQL_USER: ${MYSQL_USER:-huddle}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-huddle_dev_password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_dev_password}
+      TZ: Europe/Madrid
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u\"$$MYSQL_USER\" -p\"$$MYSQL_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    networks:
+      - huddle_net
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${MYSQL_DATABASE:-huddle}
+      DB_USER: ${MYSQL_USER:-huddle}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-huddle_dev_password}
+      DB_POOL_SIZE: ${DB_POOL_SIZE:-10}
+      TZ: Europe/Madrid
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    restart: unless-stopped
+    networks:
+      - huddle_net
+
+  adminer:
+    image: adminer:4
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      TZ: Europe/Madrid
+    ports:
+      - "${ADMINER_PORT:-8081}:8080"
+    networks:
+      - huddle_net
+
+volumes:
+  db_data:
+
+networks:
+  huddle_net:
+    driver: bridge

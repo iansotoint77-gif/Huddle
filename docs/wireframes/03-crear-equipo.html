@@ -1,0 +1,63 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><style>
+:root{--navy:#182440;--ink:#1f2a44;--label:#3c4864;--orange:#e6600a;--orangeT:#ffecd9;
+--green:#2e7d32;--greenT:#e2f2e3;--greenX:#1b5e20;--redT:#fde2e2;--redX:#b71c1c;
+--amberT:#fff3cd;--amberS:#f5a623;--amberX:#854d0e;--bg:#f0f4fa;--blueT:#e9eff9;--line:#cdd6e4;--mut:#6b7590}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;overflow:hidden}
+.nav{background:var(--navy);height:64px;display:flex;align-items:center;gap:16px;padding:0 32px;color:#fff}
+.logo{width:28px;height:28px;border-radius:7px;background:var(--orange);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px}.logo::after{content:'H'}
+.brand{font-weight:700;font-size:18px}.navlink{color:#a8b4cd;font-size:14px}
+.sp{flex:1}.muted{color:var(--mut)}.small{font-size:12px}
+.pill{background:#fff;color:var(--ink);border-radius:20px;padding:8px 12px;font-weight:600;font-size:13px;display:flex;gap:8px;align-items:center}
+.pill i{font-size:9px;color:var(--mut);font-style:normal}
+.content{padding:28px 32px;display:flex;flex-direction:column;gap:20px}
+h1{font-size:28px;font-weight:700}h2{font-size:18px;font-weight:700}
+.crumb{font-size:13px;color:var(--mut)}
+.row{display:flex;gap:20px}.row12{display:flex;gap:12px}.row8{display:flex;gap:8px}.ac{align-items:center}.f1{flex:1}
+.col{display:flex;flex-direction:column}.g4{gap:4px}.g6{gap:6px}.g12{gap:12px}.g20{gap:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.btn{background:var(--orange);color:#fff;font-weight:600;font-size:14px;padding:10px 16px;border-radius:7px;border:1px solid var(--orange);text-align:center;white-space:nowrap}
+.btn.sec{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn.danger{background:#fff;color:var(--redX);border-color:var(--redX)}
+.btn.dark{background:var(--navy);border-color:var(--navy)}
+.btn.vote.on{background:var(--orange);color:#fff;border-color:var(--orange)}
+.btn.vote{flex:1;background:#fff;color:var(--ink);border-color:var(--line)}
+.chip{display:inline-block;align-self:flex-start;font-size:12px;font-weight:600;padding:3px 10px;border-radius:12px;background:var(--blueT);color:var(--label);white-space:nowrap;border:1px solid transparent}
+.ac>.chip{align-self:center}.chip.partido{background:var(--orange);color:#fff}.chip.entr{background:var(--navy);color:#fff}
+.chip.out{background:#fff;border-color:var(--line);color:var(--label)}
+.chip.voy{background:var(--green);color:#fff}.chip.voyT{background:var(--greenT);color:var(--greenX)}
+.chip.no{background:var(--redT);color:var(--redX)}.chip.qz{background:var(--amberT);color:var(--amberX);border-color:var(--amberS)}
+.chip.sin{background:#fff;color:var(--redX);border-color:var(--redX)}.chip.todos{background:var(--navy);color:#fff}
+.field{display:flex;flex-direction:column;gap:6px;flex:1}
+.field label{font-size:12px;font-weight:600;color:var(--label)}
+.input{border:1px solid var(--line);border-radius:7px;padding:10px 12px;background:#fff;color:var(--mut);display:flex;justify-content:space-between}
+.input.v{color:var(--ink)}.input.err{border-color:var(--redX)}.err-t{font-size:12px;color:var(--redX)}
+.note{background:#fff9c4;border:1px solid #fbc02d;border-radius:5px;padding:10px;font-size:12px;color:#614f00}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{padding:10px 16px;color:var(--mut)}.tab.on{color:var(--ink);font-weight:600;border-bottom:3px solid var(--orange)}
+.shield{width:48px;height:48px;border-radius:9px;background:var(--orangeT);border:1px solid #f6c89a}
+.ev{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;align-items:center;gap:16px}
+.date{width:64px;background:var(--orangeT);border-radius:8px;padding:8px;text-align:center}
+.date b{display:block;font-size:24px;line-height:28px}.date span{font-size:12px;font-weight:600;color:var(--orange)}
+.stat{flex:1;border-radius:9px;padding:12px;text-align:center;background:var(--blueT)}
+.stat b{display:block;font-size:24px}.stat span{font-size:12px;color:var(--mut)}
+.stat.g{background:var(--greenT)}.stat.r{background:var(--redT)}.stat.a{background:var(--amberT)}
+table{border-collapse:collapse;width:100%}
+th{font-size:12px;text-align:left;padding:8px 8px 8px 0;border-bottom:1px solid var(--line);color:var(--label)}
+td{font-size:13px;padding:9px 8px 9px 0;border-bottom:1px solid var(--line)}td.n{font-weight:600}td.m{color:var(--mut)}
+.user{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:7px;background:#fff}
+.user.on{border:2px solid var(--orange);background:var(--orangeT)}
+.dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--ink);background:#fff}.user.on .dot{background:var(--orange);border-color:var(--orange)}
+.seg{display:flex;gap:8px}
+.banner{border-radius:6px;padding:12px;font-size:13px;background:var(--redT);border:1px solid var(--redX);color:var(--redX)}
+.banner.ok{background:var(--greenT);border-color:#81c784;color:var(--greenX)}
+.sk{height:16px;border-radius:4px;background:#dfe6f2}
+.cap{font-size:12px;font-weight:600;color:var(--mut);letter-spacing:.3px}
+
+body{width:1280px;height:820px}</style></head><body>
+<div class="nav"><div class="logo"></div><span class="brand">Huddle</span><span class="navlink">Mis equipos</span><div class="sp"></div><span class="navlink small">Usuario actual</span><div class="pill">Carlos Ruiz<i>▼</i></div></div>
+<div class="content"><div class="crumb">Mis equipos &nbsp;/&nbsp; Nuevo equipo</div><h1>Crear equipo</h1>
+<div class="card" style="width:560px"><div class="field"><label>Nombre del equipo *</label><div class="input"><span>Ej. Minibasket 2016</span></div></div><div class="field"><label>Categoría *</label><div class="input"><span>Seleccionar categoría</span><i style="font-size:9px;font-style:normal">▼</i></div></div>
+<div class="note">Nota: Al crear el equipo serás su entrenador (administrador): se te añade a miembros_equipo con rol ENTRENADOR.</div>
+<div class="row12"><div class="sp"></div><div class="btn sec">Cancelar</div><div class="btn">Crear equipo</div></div></div>
+<div class="note" style="width:560px">Nota: POST /api/equipos → 201 Created. 400 si falta el nombre o la categoría.</div></div></body></html>
