@@ -49,4 +49,21 @@ Listar los ocho tests DAO existentes, compararlos con la sección 9, completar l
 
 La suite quedó en 9 tests y `mvn test` finalizó correctamente: 9 ejecutados, 0 fallos, 0 errores y 0 omitidos.
 
+## Fase 3 — Capa de Servicio y tests
+
+### Prompt
+
+Implementar únicamente la Fase 3 siguiendo `.junie/AGENTS.md`: servicios con las reglas de negocio y transacciones de la sección 7, tests Mockito y ejecutar `mvn test`, sin iniciar la Fase 4.
+
+### Decisiones de arquitectura
+
+- Los servicios reciben DTOs de entrada y devuelven DTOs; las entidades quedan dentro de la coordinación Servicio–DAO. Se añadieron DTOs específicos para detalle del equipo, resumen de equipos/eventos, plantilla con datos del usuario y resumen de asistencia.
+- `ServiceValidation` centraliza campos obligatorios, longitudes, formato de email y rango de dorsales. Los servicios verifican existencia de equipo/evento antes de permisos, validan roles, y traducen duplicados DAO a mensajes de negocio.
+- Crear equipo usa `TransactionManager` para insertar equipo y entrenador de forma atómica; ante fallo de la segunda inserción ejecuta rollback. Los resúmenes de asistencia se calculan sobre jugadores y marcan explícitamente `SIN_RESPONDER`.
+- Los tests usan Mockito para los DAO; el test transaccional usa el `TransactionManager` real con un `DataSource` de seguimiento y una conexión proxy para verificar commit/rollback sin intentar instrumentar clases JDK con el Byte Buddy disponible en la JVM local.
+
+### Resultado
+
+Se implementaron `UsuarioService`, `EquipoService`, `EventoService` y `RespuestaService`, junto con validación reutilizable y DTOs de resumen. `mvn test` compiló con `--release 17` y terminó correctamente: 47 tests (9 DAO y 38 de servicio), 0 fallos, 0 errores y 0 omitidos. No se inició la Fase 4.
+
 ## Errores corregidos manualmente por el alumno
