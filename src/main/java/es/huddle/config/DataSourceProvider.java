@@ -15,6 +15,10 @@ public final class DataSourceProvider {
         return Holder.DATA_SOURCE;
     }
 
+    public static void close() {
+        Holder.DATA_SOURCE.close();
+    }
+
     private static HikariDataSource createDataSource() {
         String host = requiredEnvironmentVariable("DB_HOST");
         String portValue = requiredEnvironmentVariable("DB_PORT");

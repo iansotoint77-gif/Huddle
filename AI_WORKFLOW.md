@@ -66,4 +66,21 @@ Implementar únicamente la Fase 3 siguiendo `.junie/AGENTS.md`: servicios con la
 
 Se implementaron `UsuarioService`, `EquipoService`, `EventoService` y `RespuestaService`, junto con validación reutilizable y DTOs de resumen. `mvn test` compiló con `--release 17` y terminó correctamente: 47 tests (9 DAO y 38 de servicio), 0 fallos, 0 errores y 0 omitidos. No se inició la Fase 4.
 
+## Fase 4 — Controladores y API
+
+### Prompt
+
+Implementar la Fase 4: servlets JSON para los endpoints REST, filtro `X-Usuario-Id` con excepción de `/api/usuarios`, manejo centralizado de errores y filtros UTF-8. Levantar Compose, comprobar endpoints principales con curl y ejecutar `mvn test`, sin iniciar la Fase 5.
+
+### Decisiones de arquitectura
+
+- `AppConfig` crea una instancia compartida de DAO y servicios al iniciar el contexto web; los servlets reciben esos servicios desde el `ServletContext`, manteniendo el flujo Controller → Service → DAO.
+- `BaseServlet` estandariza errores en JSON y los códigos 400/403/404/409; los errores inesperados se registran en el log y devuelven un mensaje genérico 500. Las creaciones devuelven 201 con `Location` y los borrados 204 sin cuerpo.
+- `UsuarioFilter` publica un id positivo como atributo de petición y omite la cabecera en `/api/usuarios` y `/api/health`. `JsonUtil` centraliza Gson y serialización ISO-8601 de `LocalDateTime`.
+- Se utiliza el mapeo de servlets por anotaciones y parámetros JSON DTO; no se añade CORS porque las vistas web se servirán desde el mismo origen.
+
+### Resultado
+
+`mvn test` compiló con Java 17 y terminó correctamente: 49 tests, 0 fallos, 0 errores y 0 omitidos. `docker compose up --build -d` reconstruyó la aplicación y dejó MySQL healthy, Tomcat y Adminer iniciados. Las pruebas HTTP devolvieron 200 en salud, listados y detalles; 201 en creación de evento y miembro con `Location`; 204 al borrar evento y miembro; 400 por cabecera ausente y validación de partido; 403 al crear como jugador; 404 para evento inexistente; y 409 por email/miembro duplicado. Se comprobó también que los votos se actualizan con PUT y se validó/limpió los recursos de prueba.
+
 ## Errores corregidos manualmente por el alumno
