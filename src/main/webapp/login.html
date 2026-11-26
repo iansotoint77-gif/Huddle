@@ -3,18 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#182440">
+    <meta name="theme-color" content="#5b5bd6">
     <title>Huddle · Iniciar sesión</title>
     <link rel="stylesheet" href="css/styles.css">
     <script type="module" src="js/login.js"></script>
 </head>
-<body>
-<header class="nav">
-    <span class="logo" aria-hidden="true">H</span>
-    <a class="brand" href="login.html">Huddle</a>
-</header>
-<main class="content narrow login-wrap">
+<body class="auth-page">
+<main class="auth-shell">
     <section class="card auth-card" aria-labelledby="page-title">
+        <a class="auth-brand" href="login.html"><span class="logo" aria-hidden="true">H</span><span>Huddle</span></a>
         <h1 id="page-title">Inicia sesión</h1>
         <p class="muted">Entra con el email de tu cuenta para gestionar tus equipos y eventos.</p>
         <form id="login-form" class="column auth-form" novalidate>

@@ -16,17 +16,26 @@ export function button(text, className = 'btn', onClick, type = 'button') {
 
 export function setLoading(container, label = 'Cargando…') {
     container.replaceChildren();
-    const card = element('div', 'skeleton-card');
-    card.setAttribute('aria-label', label);
-    card.setAttribute('role', 'status');
-    card.append(element('div', 'skeleton'), element('div', 'skeleton w80'), element('div', 'skeleton w60'), element('p', 'muted small', label));
-    container.append(card);
+    const loader = element('div', 'skeleton-grid');
+    loader.setAttribute('aria-label', label);
+    loader.setAttribute('aria-busy', 'true');
+    loader.setAttribute('role', 'status');
+    for (let index = 0; index < 3; index += 1) {
+        const card = element('div', 'skeleton-card');
+        card.setAttribute('aria-hidden', 'true');
+        const heading = element('div', 'skeleton-head');
+        heading.append(element('span', 'skeleton-avatar'), element('span', 'skeleton-line w60'));
+        card.append(heading, element('span', 'skeleton-line w80'), element('span', 'skeleton-line'), element('span', 'skeleton-line w35'));
+        loader.append(card);
+    }
+    if (container.classList.contains('card-grid')) loader.style.gridColumn = '1 / -1';
+    container.append(loader);
 }
 
 export function showEmpty(container, title, description, actionText, action) {
     container.replaceChildren();
     const empty = element('section', 'empty');
-    empty.append(element('h2', '', title), element('p', 'muted', description));
+    empty.append(emptyIllustration(), element('h2', '', title), element('p', 'muted', description));
     if (actionText && action) empty.append(button(actionText, 'btn', action));
     if (container.classList.contains('card-grid')) empty.style.gridColumn = '1 / -1';
     container.append(empty);
@@ -62,6 +71,82 @@ export function showToast(message, kind = 'success') {
     const toast = element('div', kind === 'error' ? 'toast error' : 'toast', message);
     region.append(toast);
     window.setTimeout(() => toast.remove(), 3800);
+}
+
+export function emptyIllustration() {
+    const namespace = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(namespace, 'svg');
+    svg.setAttribute('viewBox', '0 0 88 68');
+    svg.setAttribute('class', 'empty-illustration');
+    svg.setAttribute('aria-hidden', 'true');
+    const calendar = document.createElementNS(namespace, 'rect');
+    calendar.setAttribute('x', '16');
+    calendar.setAttribute('y', '12');
+    calendar.setAttribute('width', '48');
+    calendar.setAttribute('height', '42');
+    calendar.setAttribute('rx', '9');
+    calendar.setAttribute('fill', 'currentColor');
+    calendar.setAttribute('opacity', '.12');
+    const outline = document.createElementNS(namespace, 'rect');
+    outline.setAttribute('x', '16');
+    outline.setAttribute('y', '12');
+    outline.setAttribute('width', '48');
+    outline.setAttribute('height', '42');
+    outline.setAttribute('rx', '9');
+    outline.setAttribute('fill', 'none');
+    outline.setAttribute('stroke', 'currentColor');
+    outline.setAttribute('stroke-width', '2');
+    const detail = document.createElementNS(namespace, 'path');
+    detail.setAttribute('d', 'M16 25h48M28 8v9M52 8v9M29 36h8m7 0h8M29 44h8');
+    detail.setAttribute('fill', 'none');
+    detail.setAttribute('stroke', 'currentColor');
+    detail.setAttribute('stroke-width', '2');
+    detail.setAttribute('stroke-linecap', 'round');
+    svg.append(calendar, outline, detail);
+    return svg;
+}
+
+export function eventTypeIcon(type) {
+    const namespace = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(namespace, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    if (type === 'PARTIDO') {
+        const ball = document.createElementNS(namespace, 'circle');
+        ball.setAttribute('cx', '12');
+        ball.setAttribute('cy', '12');
+        ball.setAttribute('r', '8.5');
+        const seams = document.createElementNS(namespace, 'path');
+        seams.setAttribute('d', 'M4.6 8.1c4.2.5 7.3 3.6 8.1 8.2M9.3 3.8c.5 4.2 3.6 7.2 8.2 8M5.2 17.8c3.1-1 5.2-3.1 6.1-6.2m2.8 8.1c1-3.2 3.2-5.3 6.3-6.2');
+        svg.append(ball, seams);
+    } else {
+        const weight = document.createElementNS(namespace, 'path');
+        weight.setAttribute('d', 'M6 8v8M4 10v4M18 8v8m2-6v4M6 12h12');
+        svg.append(weight);
+    }
+    const wrapper = element('span', `event-type-icon ${type === 'PARTIDO' ? 'match' : 'training'}`);
+    wrapper.setAttribute('aria-hidden', 'true');
+    wrapper.append(svg);
+    return wrapper;
+}
+
+export function userAvatar(user) {
+    const name = String(user.nombre ?? '').trim();
+    const parts = name.split(/\s+/).filter(Boolean);
+    const initials = parts.length > 1
+        ? `${parts[0][0]}${parts[parts.length - 1][0]}`
+        : (parts[0] || '?').slice(0, 2);
+    const identity = user.id ?? user.usuarioId;
+    let tone;
+    if (identity !== undefined && identity !== null && Number.isFinite(Number(identity))) {
+        tone = Math.abs(Number(identity)) % 8;
+    } else {
+        tone = [...name].reduce((hash, character) => hash + character.charCodeAt(0), 0) % 8;
+    }
+    const avatar = element('span', `member-avatar avatar-tone-${tone}`, initials.toLocaleUpperCase('es'));
+    avatar.setAttribute('aria-hidden', 'true');
+    avatar.title = name;
+    return avatar;
 }
 
 export function showFormError(banner, error, form) {
@@ -163,7 +248,8 @@ export function dateParts(value) {
     const date = new Date(value);
     return {
         weekday: new Intl.DateTimeFormat('es-ES', { weekday: 'short' }).format(date).replace('.', ''),
-        day: new Intl.DateTimeFormat('es-ES', { day: '2-digit' }).format(date)
+        day: new Intl.DateTimeFormat('es-ES', { day: '2-digit' }).format(date),
+        month: new Intl.DateTimeFormat('es-ES', { month: 'short' }).format(date).replace('.', '')
     };
 }
 
@@ -183,6 +269,22 @@ export function countsRow(event) {
     row.append(element('span', 'chip no', `No voy ${event.noVoy}`));
     row.append(element('span', 'chip maybe', `Quizás ${event.quizas}`));
     row.append(element('span', 'chip unanswered', `Sin responder ${event.sinResponder}`));
+    const values = [
+        ['progress-yes', Number(event.voy) || 0],
+        ['progress-no', Number(event.noVoy) || 0],
+        ['progress-maybe', Number(event.quizas) || 0],
+        ['progress-unanswered', Number(event.sinResponder) || 0]
+    ];
+    const total = values.reduce((sum, [, count]) => sum + count, 0);
+    const progress = element('div', 'response-progress');
+    progress.setAttribute('role', 'img');
+    progress.setAttribute('aria-label', total ? `Distribución de ${total} respuestas` : 'Sin respuestas registradas');
+    values.forEach(([className, count]) => {
+        const segment = element('span', className);
+        segment.style.width = total ? `${count / total * 100}%` : '0';
+        progress.append(segment);
+    });
+    row.append(progress);
     return row;
 }
 

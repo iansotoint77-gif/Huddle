@@ -1,7 +1,7 @@
 import { api, HuddleApiError } from './api.js';
 import {
-    button, confirmDelete, element, errorMessage, formatDateTime, requireId, requireUser,
-    setButtonSaving, setLoading, showError, showToast, statusChip
+    button, confirmDelete, element, emptyIllustration, errorMessage, eventTypeIcon, formatDateTime, requireId,
+    requireUser, setButtonSaving, setLoading, showError, showToast, statusChip
 } from './ui.js';
 
 const eventId = requireId('id');
@@ -13,7 +13,9 @@ let currentUser;
 function eventHeading(event, team, role) {
     const card = element('section', 'card event-heading');
     const top = element('div', 'row-between mobile-stack');
-    top.append(element('span', `chip ${event.tipo === 'PARTIDO' ? 'match' : 'outline'}`, event.tipo === 'PARTIDO' ? 'Partido' : 'Entrenamiento'));
+    const type = element('span', `chip ${event.tipo === 'PARTIDO' ? 'match' : 'outline'}`);
+    type.append(eventTypeIcon(event.tipo), document.createTextNode(event.tipo === 'PARTIDO' ? 'Partido' : 'Entrenamiento'));
+    top.append(type);
     if (role === 'ENTRENADOR') {
         const actions = element('div', 'table-actions');
         const edit = element('a', 'btn sec small-btn', 'Editar evento');
@@ -82,7 +84,7 @@ function renderPlayers(summary) {
             const row = element('tr');
             const name = element('td', 'name-cell', player.nombre);
             name.dataset.label = 'Jugador';
-            const number = element('td', '', player.dorsal === null ? '—' : String(player.dorsal));
+            const number = element('td', '', player.dorsal == null ? '—' : String(player.dorsal));
             number.dataset.label = 'Dorsal';
             const state = element('td');
             state.dataset.label = 'Respuesta';
@@ -113,7 +115,7 @@ function renderPlayers(summary) {
     card.append(filters);
     table.append(head, body);
     wrap.append(table);
-    if (!summary.jugadores.length) card.append(element('p', 'muted', 'Este equipo todavía no tiene jugadores añadidos.'));
+    if (!summary.jugadores.length) card.append(emptyIllustration(), element('p', 'muted', 'Este equipo todavía no tiene jugadores añadidos.'));
     else card.append(wrap);
     return card;
 }
@@ -135,7 +137,7 @@ function renderPlayerAttendance(summary) {
         const isCurrent = Number(player.usuarioId) === Number(currentUser.id);
         const name = element('td', 'name-cell', `${player.nombre}${isCurrent ? ' (tú)' : ''}`);
         name.dataset.label = 'Jugador';
-        const number = element('td', '', player.dorsal === null ? '—' : String(player.dorsal));
+        const number = element('td', '', player.dorsal == null ? '—' : String(player.dorsal));
         number.dataset.label = 'Dorsal';
         const state = element('td');
         state.dataset.label = 'Respuesta';
@@ -147,7 +149,7 @@ function renderPlayerAttendance(summary) {
     });
     table.append(head, body);
     wrap.append(table);
-    if (!summary.jugadores.length) players.append(element('p', 'muted', 'Este equipo todavía no tiene jugadores añadidos.'));
+    if (!summary.jugadores.length) players.append(emptyIllustration(), element('p', 'muted', 'Este equipo todavía no tiene jugadores añadidos.'));
     else players.append(wrap);
     panel.append(players);
     return panel;

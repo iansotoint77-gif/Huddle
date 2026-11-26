@@ -1,7 +1,7 @@
 import { api } from './api.js';
 import {
-    button, confirmDelete, countsRow, dateParts, element, errorMessage, formatDateTime, requireId,
-    requireUser, roleLabel, setLoading, showError, showToast
+    button, confirmDelete, countsRow, dateParts, element, emptyIllustration, errorMessage, eventTypeIcon,
+    formatDateTime, requireId, requireUser, roleLabel, setLoading, showError, showToast, userAvatar
 } from './ui.js';
 
 const teamId = requireId('id');
@@ -40,9 +40,11 @@ function eventCard(summary, role) {
     const parts = dateParts(event.fechaHora);
     const card = element('article', 'event-card');
     const date = element('div', 'date-badge');
-    date.append(element('span', '', parts.weekday), element('b', '', parts.day));
+    date.append(element('span', '', parts.weekday), element('b', '', parts.day), element('small', '', parts.month));
     const details = element('div', 'event-main');
-    details.append(element('span', `chip ${event.tipo === 'PARTIDO' ? 'match' : 'outline'}`, event.tipo === 'PARTIDO' ? 'Partido' : 'Entrenamiento'));
+    const type = element('span', `chip ${event.tipo === 'PARTIDO' ? 'match' : 'outline'}`);
+    type.append(eventTypeIcon(event.tipo), document.createTextNode(event.tipo === 'PARTIDO' ? 'Partido' : 'Entrenamiento'));
+    details.append(type);
     details.append(element('strong', 'event-title', event.titulo));
     details.append(element('span', 'event-meta', `${formatDateTime(event.fechaHora, { short: true })} · ${event.lugar}`));
     const actions = element('div', 'event-actions table-actions');
@@ -81,7 +83,7 @@ function renderEvents(role, upcoming, past) {
     section.append(header);
     if (!upcoming.length) {
         const empty = element('section', 'empty');
-        empty.append(element('h2', '', 'No hay próximos eventos'), element('p', 'muted', 'Aquí aparecerán los entrenamientos y partidos de este equipo.'));
+        empty.append(emptyIllustration(), element('h2', '', 'No hay próximos eventos'), element('p', 'muted', 'Aquí aparecerán los entrenamientos y partidos de este equipo.'));
         if (role === 'ENTRENADOR') {
             const add = element('a', 'btn', 'Crear evento');
             add.href = `evento-nuevo.html?equipo=${encodeURIComponent(teamId)}`;
@@ -102,10 +104,12 @@ function renderEvents(role, upcoming, past) {
 
 function memberRow(member, role) {
     const row = element('tr');
-    const values = [member.dorsal === null ? '—' : String(member.dorsal), member.nombre, member.email, member.rol];
+    const values = [member.dorsal == null ? '—' : String(member.dorsal), member.nombre, member.email, member.rol];
     ['Dorsal', 'Nombre', 'Email', 'Rol'].forEach((label, index) => {
-        const cell = element('td', index === 1 ? 'name-cell' : '', values[index]);
+        const cell = element('td', index === 1 ? 'name-cell member-name-cell' : '');
         cell.dataset.label = label;
+        if (index === 1) cell.append(userAvatar(member), element('span', '', values[index]));
+        else cell.textContent = values[index];
         row.append(cell);
     });
     const actions = element('td');
@@ -152,7 +156,7 @@ function renderMembers(role, members) {
     const tableCard = element('section', 'card grow');
     tableCard.append(element('h2', '', `Plantilla (${members.length})`));
     if (!members.length) {
-        tableCard.append(element('p', 'muted', 'Aún no hay miembros en la plantilla.'));
+        tableCard.append(emptyIllustration(), element('p', 'muted', 'Aún no hay miembros en la plantilla.'));
     } else {
         const wrap = element('div', 'table-wrap');
         const table = element('table', 'table-mobile-cards');
