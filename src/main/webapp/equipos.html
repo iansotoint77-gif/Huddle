@@ -14,8 +14,18 @@
     <a class="brand" href="equipos.html">Huddle</a>
     <a class="navlink" href="equipos.html">Mis equipos</a>
     <span class="nav-spacer"></span>
-    <button class="mobile-menu" type="button" aria-expanded="false" aria-label="Abrir menú">≡</button>
-    <div class="nav-user"><label for="current-user">Usuario actual</label><select id="current-user" aria-label="Cambiar usuario actual"></select></div>
+    <div class="account-menu">
+        <button id="account-toggle" class="account-toggle" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="account-dropdown">
+            <span id="account-avatar" class="account-avatar"></span><span id="account-name" class="account-name"></span><span aria-hidden="true">⌄</span>
+        </button>
+        <div id="account-dropdown" class="account-dropdown" role="menu" hidden>
+            <div class="account-profile"><span class="account-profile-label">Mi perfil</span><strong id="account-profile-name"></strong><span id="account-profile-email"></span></div>
+            <a role="menuitem" href="ajustes.html">Ajustes</a>
+            <a role="menuitem" href="como-funciona.html">Cómo funciona</a>
+            <a role="menuitem" href="ayuda.html">Ayuda</a>
+            <button id="logout-button" role="menuitem" class="logout-button" type="button">Cerrar sesión</button>
+        </div>
+    </div>
 </header>
 <main class="content">
     <div class="row-between mobile-stack">

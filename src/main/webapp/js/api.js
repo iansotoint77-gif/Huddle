@@ -7,10 +7,34 @@ export class HuddleApiError extends Error {
     }
 }
 
-async function request(path, { method = 'GET', body, user = true } = {}) {
+export const SESSION_KEY = 'huddle.session';
+
+export function readSession() {
+    try {
+        const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+        return session?.usuarioId && session.nombre && session.email ? session : null;
+    } catch {
+        return null;
+    }
+}
+
+export function saveSession(user) {
+    const session = { usuarioId: user.id, nombre: user.nombre, email: user.email };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    return session;
+}
+
+export function clearSession() {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem('huddle.usuarioId');
+    localStorage.removeItem('huddle.nombre');
+    localStorage.removeItem('huddle.email');
+}
+
+async function request(path, { method = 'GET', body } = {}) {
     const headers = { Accept: 'application/json' };
-    const userId = localStorage.getItem('huddle.usuarioId');
-    if (user && userId) headers['X-Usuario-Id'] = userId;
+    const session = readSession();
+    if (session) headers['X-Usuario-Id'] = String(session.usuarioId);
     if (body !== undefined) headers['Content-Type'] = 'application/json';
 
     let response;
@@ -42,8 +66,10 @@ async function request(path, { method = 'GET', body, user = true } = {}) {
 }
 
 export const api = {
-    users: () => request('/api/usuarios', { user: false }),
-    createUser: (body) => request('/api/usuarios', { method: 'POST', body, user: false }),
+    users: () => request('/api/usuarios'),
+    userByEmail: (email) => request(`/api/usuarios?email=${encodeURIComponent(email)}`),
+    createUser: (body) => request('/api/usuarios', { method: 'POST', body }),
+    updateUser: (id, body) => request(`/api/usuarios/${encodeURIComponent(id)}`, { method: 'PUT', body }),
     teams: () => request('/api/equipos'),
     team: (id) => request(`/api/equipos/${encodeURIComponent(id)}`),
     createTeam: (body) => request('/api/equipos', { method: 'POST', body }),

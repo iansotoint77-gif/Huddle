@@ -100,4 +100,20 @@ Implementar únicamente el frontend HTML/CSS/JavaScript nativo de la Fase 5, con
 
 Se implementaron las seis vistas (selector de usuario, equipos, equipo/eventos, plantilla, formularios de alta/edición y asistencia por rol), con operaciones CRUD y estados de carga, vacío, validación, error y éxito. Los ocho módulos pasaron `node --check`; `mvn -DskipTests package` y `docker compose up --build -d` finalizaron correctamente. Compose quedó con app y Adminer activos y MySQL healthy; `/`, `/evento.html`, CSS/JS y `/api/health` respondieron HTTP 200, y los payloads de equipo y asistencia de jugador/entrenador se comprobaron con HTTP 200. URL de revisión: `http://localhost:8080/`. La prueba interactiva completa de navegador/consola queda pendiente: Playwright no está instalado y Edge headless no devolvió un DOM útil; no se inició la Fase 6.
 
+## Cambio A — Sesión y perfil
+
+### Prompt
+
+Quitar el selector de usuario y añadir acceso por email, registro validado, sesión simulada en `localStorage`, cabecera `X-Usuario-Id`, menú de perfil, edición del nombre y páginas de ajustes/guía/ayuda; documentar la limitación, ejecutar `mvn test` y verificar registro, login y logout con curl.
+
+### Decisiones de arquitectura
+
+- La sesión se guarda como un objeto JSON con `usuarioId`, `nombre` y `email`; las peticiones del wrapper `api.js` envían el id en `X-Usuario-Id` cuando hay sesión. Login y registro consultan/crean usuarios sin credenciales, por lo que queda explícito que no es autenticación real.
+- El backend reutiliza `UsuarioService`: búsqueda normalizada por email devuelve `404` con indicación de registro, y `PUT /api/usuarios/{id}` cambia solo el nombre del propio usuario, conservando el email y rechazando ediciones de perfiles ajenos.
+- La interfaz mantiene un resumen de perfil en el desplegable común y páginas propias para ajustes, los cuatro pasos de uso y preguntas frecuentes en acordeón; las páginas de la aplicación requieren una sesión y la raíz redirige al acceso.
+
+### Resultado
+
+Implementación realizada; `mvn test` terminó en `BUILD SUCCESS` con 55 tests, 0 fallos/errores/omitidos (9 pruebas Testcontainers), y los 13 módulos JavaScript pasaron `node --check`. `docker compose up --build -d` reconstruyó la aplicación; `/api/health`, las cinco páginas nuevas y las consultas de login devolvieron `200`; registro `201` con `Location`, email inexistente `404`, email duplicado `409`, actualización propia `200` y edición de otro perfil `403`. El endpoint de destino `login.html` devuelve `200`; el logout es deliberadamente cliente, borra `localStorage` y redirige, por lo que curl no puede ejecutar esa acción del navegador. Se borraron de MySQL las dos cuentas temporales de prueba creadas durante la comprobación.
+
 ## Errores corregidos manualmente por el alumno

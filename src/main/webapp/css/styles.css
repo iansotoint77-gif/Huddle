@@ -43,6 +43,19 @@ h3 { font-size: 16px; }
 .nav-user { display: flex; align-items: center; gap: 9px; color: #c5cde0; font-size: 12px; }
 .nav-user select { max-width: 220px; border: 0; border-radius: 20px; padding: 8px 12px; color: var(--ink); background: #fff; font-weight: 600; }
 .mobile-menu { display: none; border: 0; padding: 0 4px; color: #fff; background: transparent; font-size: 25px; line-height: 1; }
+.account-menu { position: relative; margin-left: auto; }
+.account-toggle { min-height: 40px; padding: 4px 8px 4px 4px; display: flex; align-items: center; gap: 9px; border: 0; border-radius: 24px; color: #fff; background: transparent; }
+.account-toggle:hover, .account-toggle[aria-expanded="true"] { background: rgb(255 255 255 / 10%); }
+.account-avatar { width: 32px; height: 32px; flex: 0 0 32px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: var(--orange); font-size: 12px; font-weight: 700; }
+.account-name { max-width: 180px; overflow: hidden; color: #fff; font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.account-dropdown { position: absolute; z-index: 15; top: calc(100% + 8px); right: 0; width: 270px; padding: 8px; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 10px; background: #fff; box-shadow: 0 10px 28px rgb(24 36 64 / 18%); color: var(--ink); }
+.account-dropdown > a, .logout-button { min-height: 40px; padding: 10px 12px; display: flex; align-items: center; border: 0; border-radius: 6px; color: var(--ink); background: transparent; font-size: 14px; text-align: left; }
+.account-dropdown > a:hover, .logout-button:hover { background: var(--blueT); }
+.account-profile { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid var(--line); }
+.account-profile-label { color: var(--mut); font-size: 12px; }
+.account-profile strong { font-size: 14px; }
+.account-profile > span:last-child { overflow-wrap: anywhere; color: var(--mut); font-size: 12px; }
+.logout-button { margin-top: 4px; border-top: 1px solid var(--line); border-radius: 0 0 6px 6px; color: var(--redX); cursor: pointer; }
 .content { width: min(100%, 1280px); margin: 0 auto; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px; }
 .content.narrow { width: min(100%, 720px); }
 .crumb { color: var(--mut); font-size: 13px; }
@@ -125,6 +138,22 @@ td.name-cell { font-weight: 600; }
 .toast.error { border-color: var(--redX); color: var(--redX); background: var(--redT); }
 .login-wrap { padding-top: 24px; align-items: center; }
 .login-card { width: min(100%, 520px); }
+.auth-card { width: min(100%, 520px); }
+.auth-card h1 { font-size: 24px; }
+.auth-form { gap: 14px; }
+.demo-note { padding: 10px 12px; border-radius: 7px; color: var(--label); background: var(--blueT); font-size: 12px; text-align: center; }
+.text-link { color: var(--orange); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.settings-card { width: min(100%, 620px); }
+.profile-email { display: flex; flex-direction: column; gap: 4px; }
+.profile-email strong { font-size: 14px; }
+.steps-list { margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; list-style: none; }
+.step-card { align-items: center; flex-direction: row; }
+.step-number { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: var(--orange); font-size: 18px; font-weight: 700; }
+.step-card > div { display: flex; flex-direction: column; gap: 5px; }
+.faq-list { display: flex; flex-direction: column; gap: 10px; }
+.faq-item { padding: 16px 18px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+.faq-item summary { color: var(--ink); font-weight: 600; cursor: pointer; }
+.faq-item p { margin-top: 12px; color: var(--mut); line-height: 1.55; }
 .user-choice { width: 100%; min-height: 54px; padding: 11px 12px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 7px; background: #fff; color: var(--ink); text-align: left; }
 .user-choice.selected { border: 2px solid var(--orange); background: var(--orangeT); }
 .user-dot { width: 16px; height: 16px; flex: 0 0 16px; border: 1.5px solid var(--ink); border-radius: 50%; background: #fff; }
@@ -162,13 +191,10 @@ td.name-cell { font-weight: 600; }
     .nav { min-height: 56px; gap: 10px; padding: 0 16px; }
     .nav .brand { font-size: 16px; }
     .nav .navlink { display: none; }
-    .mobile-menu { display: inline-flex; align-items: center; justify-content: center; }
     .nav-user { display: none; }
-    .nav.open { height: auto; min-height: 56px; padding-top: 12px; padding-bottom: 12px; flex-wrap: wrap; }
-    .nav.open .navlink { display: block; flex-basis: 100%; order: 5; }
-    .nav.open .nav-user { display: flex; width: 100%; justify-content: flex-end; order: 6; }
-    .nav-user label { display: block; }
-    .nav-user select { max-width: min(220px, 62vw); padding: 7px 9px; font-size: 12px; }
+    .account-menu { margin-left: auto; }
+    .account-name { max-width: min(105px, 28vw); font-size: 12px; }
+    .account-dropdown { width: min(270px, calc(100vw - 24px)); }
     .content { padding: 16px 16px 32px; gap: 14px; }
     h1 { font-size: 24px; }
     h2 { font-size: 16px; }

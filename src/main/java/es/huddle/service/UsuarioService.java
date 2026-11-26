@@ -1,10 +1,13 @@
 package es.huddle.service;
 
 import es.huddle.dao.UsuarioDao;
+import es.huddle.dto.ActualizarNombreUsuarioDto;
 import es.huddle.dto.GuardarUsuarioDto;
 import es.huddle.dto.UsuarioDto;
 import es.huddle.dto.mapper.UsuarioMapper;
 import es.huddle.exception.DuplicateException;
+import es.huddle.exception.ForbiddenException;
+import es.huddle.exception.NotFoundException;
 import es.huddle.exception.ValidationException;
 import es.huddle.model.Usuario;
 
@@ -20,6 +23,13 @@ public final class UsuarioService {
 
     public List<UsuarioDto> listarUsuarios() {
         return usuarioDao.findAll().stream().map(UsuarioMapper::toDto).toList();
+    }
+
+    public UsuarioDto buscarPorEmail(String email) {
+        String normalizado = ServiceValidation.email(email);
+        return usuarioDao.findByEmail(normalizado).map(UsuarioMapper::toDto)
+                .orElseThrow(() -> new NotFoundException(
+                        "No existe un usuario con ese email. Regístrate para crear una cuenta."));
     }
 
     public UsuarioDto crearUsuario(GuardarUsuarioDto dto) {
@@ -38,5 +48,22 @@ public final class UsuarioService {
             throw new DuplicateException("Ya existe un usuario con ese email.", exception);
         }
         return UsuarioMapper.toDto(creado);
+    }
+
+    public UsuarioDto actualizarNombre(long usuarioActualId, long usuarioId, ActualizarNombreUsuarioDto dto) {
+        Usuario existente = usuarioDao.findById(usuarioId)
+                .orElseThrow(() -> new NotFoundException("No existe el usuario solicitado."));
+        if (usuarioActualId != usuarioId) {
+            throw new ForbiddenException("Solo puedes editar tu propio perfil.");
+        }
+        if (dto == null) {
+            throw new ValidationException("Los datos del perfil son obligatorios.");
+        }
+        String nombre = ServiceValidation.required(dto.nombre(), "nombre", 120);
+        Usuario actualizado = new Usuario(usuarioId, nombre, existente.email());
+        if (usuarioDao.update(actualizado) == 0) {
+            throw new NotFoundException("No existe el usuario solicitado.");
+        }
+        return UsuarioMapper.toDto(actualizado);
     }
 }

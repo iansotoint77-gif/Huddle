@@ -1,4 +1,4 @@
-import { api, HuddleApiError } from './api.js';
+import { clearSession, HuddleApiError, readSession } from './api.js';
 
 export function element(tag, className = '', text = '') {
     const node = document.createElement(tag);
@@ -96,49 +96,48 @@ export function clearFormError(banner, form) {
 }
 
 export async function requireUser() {
-    const storedId = localStorage.getItem('huddle.usuarioId');
-    if (!storedId) {
-        window.location.replace('index.html');
+    const user = readSession();
+    if (!user || !Number.isInteger(Number(user.usuarioId)) || Number(user.usuarioId) < 1) {
+        clearSession();
+        window.location.replace('login.html');
         return null;
     }
-    let users;
-    try {
-        users = await api.users();
-    } catch {
-        return { id: Number(storedId), nombre: 'Usuario actual', email: '' };
-    }
-    const current = users.find((user) => String(user.id) === storedId);
-    if (!current) {
-        localStorage.removeItem('huddle.usuarioId');
-        window.location.replace('index.html');
-        return null;
-    }
-    mountUserSelector(users, current.id);
+    const current = { id: Number(user.usuarioId), nombre: user.nombre, email: user.email };
+    mountAccountMenu(current);
     return current;
 }
 
-export function mountUserSelector(users, currentId) {
-    const select = document.getElementById('current-user');
-    if (!select) return;
-    select.replaceChildren();
-    users.forEach((user) => {
-        const option = element('option', '', user.nombre);
-        option.value = user.id;
-        option.selected = Number(currentId) === Number(user.id);
-        select.append(option);
+export function mountAccountMenu(user) {
+    const toggle = document.getElementById('account-toggle');
+    const dropdown = document.getElementById('account-dropdown');
+    if (!toggle || !dropdown) return;
+
+    const initials = user.nombre.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('es');
+    document.getElementById('account-avatar').textContent = initials;
+    document.getElementById('account-name').textContent = user.nombre;
+    document.getElementById('account-profile-name').textContent = user.nombre;
+    document.getElementById('account-profile-email').textContent = user.email;
+
+    const close = () => {
+        dropdown.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+    };
+    toggle.addEventListener('click', () => {
+        const opening = dropdown.hidden;
+        dropdown.hidden = !opening;
+        toggle.setAttribute('aria-expanded', String(opening));
     });
-    select.addEventListener('change', () => {
-        localStorage.setItem('huddle.usuarioId', select.value);
-        window.location.reload();
-    }, { once: true });
-    const menuButton = document.querySelector('.mobile-menu');
-    menuButton?.addEventListener('click', () => {
-        const nav = menuButton.closest('.nav');
-        const expanded = menuButton.getAttribute('aria-expanded') === 'true';
-        menuButton.setAttribute('aria-expanded', String(!expanded));
-        menuButton.setAttribute('aria-label', expanded ? 'Abrir menú' : 'Cerrar menú');
-        nav.classList.toggle('open', !expanded);
-    }, { once: true });
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.account-menu')) close();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') close();
+    });
+    dropdown.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+    document.getElementById('logout-button').addEventListener('click', () => {
+        clearSession();
+        window.location.assign('login.html');
+    });
 }
 
 export async function withLoading(container, loader, render, label) {

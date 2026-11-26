@@ -1,8 +1,11 @@
 package es.huddle.service;
 
 import es.huddle.dao.UsuarioDao;
+import es.huddle.dto.ActualizarNombreUsuarioDto;
 import es.huddle.dto.GuardarUsuarioDto;
 import es.huddle.exception.DuplicateException;
+import es.huddle.exception.ForbiddenException;
+import es.huddle.exception.NotFoundException;
 import es.huddle.exception.ValidationException;
 import es.huddle.model.Usuario;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,5 +63,59 @@ class UsuarioServiceTest {
     void crearUsuario_emailInvalido_lanzaValidationException() {
         assertThrows(ValidationException.class,
                 () -> usuarioService.crearUsuario(new GuardarUsuarioDto("Ana", "correo-invalido")));
+    }
+
+    @Test
+    void buscarPorEmail_usuarioExistente_devuelveDtoNormalizado() {
+        when(usuarioDao.findByEmail("ana@example.com"))
+                .thenReturn(Optional.of(new Usuario(1L, "Ana", "ana@example.com")));
+
+        assertEquals(1L, usuarioService.buscarPorEmail(" ANA@example.com ").id());
+    }
+
+    @Test
+    void buscarPorEmail_usuarioInexistente_lanzaNotFoundExceptionConIndicacionDeRegistro() {
+        when(usuarioDao.findByEmail("ana@example.com")).thenReturn(Optional.empty());
+
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> usuarioService.buscarPorEmail("ana@example.com"));
+
+        org.junit.jupiter.api.Assertions.assertTrue(exception.getMessage().contains("Regístrate"));
+    }
+
+    @Test
+    void actualizarNombre_usuarioPropio_actualizaElPerfilSinCambiarEmail() {
+        when(usuarioDao.findById(1L)).thenReturn(Optional.of(new Usuario(1L, "Ana", "ana@example.com")));
+        when(usuarioDao.update(new Usuario(1L, "Ana Ruiz", "ana@example.com"))).thenReturn(1);
+
+        var actualizado = usuarioService.actualizarNombre(1L, 1L, new ActualizarNombreUsuarioDto(" Ana Ruiz "));
+
+        assertEquals("Ana Ruiz", actualizado.nombre());
+        assertEquals("ana@example.com", actualizado.email());
+        verify(usuarioDao).update(new Usuario(1L, "Ana Ruiz", "ana@example.com"));
+    }
+
+    @Test
+    void actualizarNombre_usuarioInexistente_lanzaNotFoundAntesDeComprobarPermiso() {
+        when(usuarioDao.findById(2L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,
+                () -> usuarioService.actualizarNombre(1L, 2L, new ActualizarNombreUsuarioDto("Ana")));
+    }
+
+    @Test
+    void actualizarNombre_perfilDeOtroUsuario_lanzaForbiddenException() {
+        when(usuarioDao.findById(2L)).thenReturn(Optional.of(new Usuario(2L, "Beto", "beto@example.com")));
+
+        assertThrows(ForbiddenException.class,
+                () -> usuarioService.actualizarNombre(1L, 2L, new ActualizarNombreUsuarioDto("Beto")));
+    }
+
+    @Test
+    void actualizarNombre_nombreVacio_lanzaValidationException() {
+        when(usuarioDao.findById(1L)).thenReturn(Optional.of(new Usuario(1L, "Ana", "ana@example.com")));
+
+        assertThrows(ValidationException.class,
+                () -> usuarioService.actualizarNombre(1L, 1L, new ActualizarNombreUsuarioDto(" ")));
     }
 }
