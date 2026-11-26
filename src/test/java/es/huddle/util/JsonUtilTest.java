@@ -29,6 +29,21 @@ class JsonUtilTest {
     }
 
     @Test
+    void read_aceptaPartidoDelFormularioConFechaHoraIso() throws Exception {
+        HttpServletRequest request = requestWithBody("""
+                {"tipo":"PARTIDO","titulo":"LICEO FRANCES VS ZENTRO BASKET","fechaHora":"2026-11-29T16:00:00","lugar":"Liceo Arena","rival":"Zentro Basket"}
+                """);
+
+        GuardarEventoDto dto = JsonUtil.read(request, GuardarEventoDto.class);
+
+        assertEquals(TipoEvento.PARTIDO, dto.tipo());
+        assertEquals("LICEO FRANCES VS ZENTRO BASKET", dto.titulo());
+        assertEquals(LocalDateTime.of(2026, 11, 29, 16, 0), dto.fechaHora());
+        assertEquals("Liceo Arena", dto.lugar());
+        assertEquals("Zentro Basket", dto.rival());
+    }
+
+    @Test
     void read_rechazaJsonNoEstandar() throws Exception {
         HttpServletRequest request = requestWithBody("{tipo:ENTRENAMIENTO}");
 

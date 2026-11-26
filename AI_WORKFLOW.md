@@ -116,4 +116,21 @@ Quitar el selector de usuario y añadir acceso por email, registro validado, ses
 
 Implementación realizada; `mvn test` terminó en `BUILD SUCCESS` con 55 tests, 0 fallos/errores/omitidos (9 pruebas Testcontainers), y los 13 módulos JavaScript pasaron `node --check`. `docker compose up --build -d` reconstruyó la aplicación; `/api/health`, las cinco páginas nuevas y las consultas de login devolvieron `200`; registro `201` con `Location`, email inexistente `404`, email duplicado `409`, actualización propia `200` y edición de otro perfil `403`. El endpoint de destino `login.html` devuelve `200`; el logout es deliberadamente cliente, borra `localStorage` y redirige, por lo que curl no puede ejecutar esa acción del navegador. Se borraron de MySQL las dos cuentas temporales de prueba creadas durante la comprobación.
 
+## Incidencia manual — error aparente al guardar un partido
+
+### Prompt
+
+Investigar el mensaje de error al guardar un partido desde `evento-nuevo.html`, reproducir el POST con cURL, revisar logs, corregir la causa, añadir una prueba, ejecutar `mvn test` y verificar el evento en el listado.
+
+### Decisiones y causa raíz
+
+- El POST con los valores reportados y fecha-hora ISO (`2026-11-29T16:00:00`) devuelve HTTP 201; el DAO y `JsonUtil` procesan correctamente el DTO. Los logs de Tomcat no muestran una excepción del servidor.
+- El fallo ocurría después del POST exitoso: `evento-nuevo.js` llamaba a `showToast` sin importarlo. El `ReferenceError` se capturaba como error genérico de cliente y `showFormError` mostraba “Se ha producido un error inesperado”, aparentando un HTTP 500 aunque el evento ya estuviera guardado.
+- Se añadió el import de `showToast`; se mantuvo el formato ISO y no se cambió backend ni validación porque el POST no fallaba.
+- Se añadió un test de `JsonUtil` con el JSON exacto del partido para proteger el mapeo de tipo, fecha-hora, título, lugar y rival.
+
+### Resultado y validación
+
+`mvn test` terminó en `BUILD SUCCESS`: 56 tests, 0 fallos, 0 errores y 0 omitidos. Tras reconstruir Docker, cURL devolvió HTTP 201 para el POST y HTTP 200 para el listado, que incluyó el partido con `fechaHora` correcta; la repetición temporal se borró con HTTP 204 y se conservó el evento original `id=12`. `docker compose logs app --tail 100` mostró el arranque de Tomcat, sin excepción de aplicación.
+
 ## Errores corregidos manualmente por el alumno
