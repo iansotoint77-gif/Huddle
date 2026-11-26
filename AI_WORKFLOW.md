@@ -1,5 +1,16 @@
 # Registro de trabajo asistido por IA
 
+## Criterios de arquitectura transversales
+
+- **Capas y DTOs:** el flujo se mantiene como `Controller → Service → DAO → base de datos`. Los servicios concentran validación, permisos y reglas; los controladores no acceden directamente a los DAO. Los DTOs aíslan el formato de la API de las entidades y evitan serializar el modelo de persistencia.
+- **JDBC puro:** se usa JDBC con `PreparedStatement` y `try-with-resources`, sin Spring ni ORM, tal como requiere el ejercicio de Acceso a Datos. Esto deja explícitos el SQL, el ciclo de vida de recursos y el mapeo entre filas y modelos.
+- **Transacciones:** `TransactionManager` asocia la conexión a la transacción actual por hilo para que los DAO participantes compartan conexión. La coordinación queda en Servicio y garantiza atomicidad en operaciones de varios pasos, como crear el equipo y añadir al entrenador.
+- **Sesión simulada:** se guarda `usuarioId`, nombre y email en `localStorage`, y `api.js` envía el identificador mediante `X-Usuario-Id`. Se eligió conscientemente no implementar contraseñas ni autenticación real para centrar la demo en los flujos de equipo; el identificador es manipulable y no protege recursos. Mantener `usuarioId` como parámetro explícito de los servicios permite sustituir en el futuro su origen por una identidad autenticada sin trasladar la lógica de negocio al frontend.
+
+## Incidencia inicial — ubicación del prompt maestro
+
+La primera petición apuntaba a `docs/PROMPT_JUNIE.md`, pero el archivo no estaba disponible en esa ruta del proyecto. Se proporcionó la copia situada en `C:/Users/Ianso/Downloads/PROMPT_JUNIE.md`; se leyó y se copió su contenido a `.junie/AGENTS.md` antes de empezar la Fase 1. No se reconstruyó ni se inventó contenido para la ruta ausente.
+
 ## Fase 1 — Esqueleto, base de datos y Docker
 
 ### Prompt
@@ -116,6 +127,22 @@ Quitar el selector de usuario y añadir acceso por email, registro validado, ses
 
 Implementación realizada; `mvn test` terminó en `BUILD SUCCESS` con 55 tests, 0 fallos/errores/omitidos (9 pruebas Testcontainers), y los 13 módulos JavaScript pasaron `node --check`. `docker compose up --build -d` reconstruyó la aplicación; `/api/health`, las cinco páginas nuevas y las consultas de login devolvieron `200`; registro `201` con `Location`, email inexistente `404`, email duplicado `409`, actualización propia `200` y edición de otro perfil `403`. El endpoint de destino `login.html` devuelve `200`; el logout es deliberadamente cliente, borra `localStorage` y redirige, por lo que curl no puede ejecutar esa acción del navegador. Se borraron de MySQL las dos cuentas temporales de prueba creadas durante la comprobación.
 
+## Cambio B — Rediseño visual índigo
+
+### Prompt
+
+Cambiar, solo en el frontend y sin tocar backend, la identidad naranja por índigo; aplicar la paleta indicada y mejorar tarjetas, cabecera, avatares, tarjetas de evento, estados vacíos, skeletons, toasts, formularios de acceso y responsive. Corregir también la presentación de un dorsal nulo como `—`.
+
+### Decisiones de diseño
+
+- Se mantuvieron los estados semánticos verde (`VOY`), rojo (`NO_VOY`) y ámbar (`QUIZAS`); el índigo se reservó para la marca y los controles principales para conservar la distinción de estados.
+- Se implementaron componentes visuales con CSS y SVG inline, sin añadir dependencias de interfaz, de acuerdo con la restricción de frontend nativo.
+- Los avatares usan iniciales y un color determinista por usuario; los datos opcionales, como el dorsal, se representan con un marcador explícito y no con el texto `undefined`.
+
+### Resultado y validación
+
+Se aplicó el cambio visual solicitado, sin modificaciones al backend. Los 13 módulos JavaScript pasaron `node --check`, `git diff --check` pasó y Docker se reconstruyó correctamente; se comprobaron recursos y health endpoint con HTTP 200. La inspección visual interactiva en navegador quedó pendiente, por lo que no se registra como verificada.
+
 ## Incidencia manual — error aparente al guardar un partido
 
 ### Prompt
@@ -132,5 +159,37 @@ Investigar el mensaje de error al guardar un partido desde `evento-nuevo.html`, 
 ### Resultado y validación
 
 `mvn test` terminó en `BUILD SUCCESS`: 56 tests, 0 fallos, 0 errores y 0 omitidos. Tras reconstruir Docker, cURL devolvió HTTP 201 para el POST y HTTP 200 para el listado, que incluyó el partido con `fechaHora` correcta; la repetición temporal se borró con HTTP 204 y se conservó el evento original `id=12`. `docker compose logs app --tail 100` mostró el arranque de Tomcat, sin excepción de aplicación.
+
+## Fase 6A — README de entrega
+
+### Prompt
+
+Completar solo `README.md` con descripción, diagramas Mermaid de datos y contenedores, configuración, variables, cuentas de prueba, puertos, guía de uso, persistencia, ejecución de tests y estructura de paquetes.
+
+### Decisiones de documentación
+
+- Se describieron la sesión sin contraseña como limitación conocida y la publicación de MySQL como opcional, acorde con la configuración predeterminada de Compose.
+- Se documentó `docker compose down` como operación que conserva el volumen y `docker compose down -v` como destructiva; al recrear la base de datos vacía se ejecuta de nuevo `db/init.sql`.
+
+### Resultado
+
+Se completó `README.md` con las secciones y diagramas solicitados. La validación fue documental (`git diff --check`); no se ejecutaron tests ni se modificó código.
+
+## Fase 6B — Registro del flujo de trabajo
+
+### Prompt
+
+Completar solo este archivo con los prompts clave, decisiones arquitectónicas, incidencias reales, cambios posteriores solicitados por el usuario y refactorizaciones hechas manualmente por el alumno, sin inventar errores.
+
+### Decisiones y resultado
+
+- Se conservan las incidencias verificadas: falta inicial del prompt en `docs/`, ajuste de compatibilidad de la API Docker para Testcontainers y el error aparente al guardar un partido (causado por un `showToast` sin importar después de que el POST ya devolviera 201).
+- Se registra por separado el rediseño índigo solicitado tras revisar la aplicación y la documentación 6A; son cambios requeridos por el usuario, no se presentan como refactorizaciones del alumno.
+- En el historial disponible no se identifica ninguna refactorización hecha manualmente por el alumno. Para no atribuir autoría ni inventar tareas, se deja constancia de esa falta de datos; el alumno puede añadir aquí sus refactorizaciones cuando las detalle.
+- La sección «Errores corregidos manualmente por el alumno» se mantiene vacía, tal como se acordó para que la complete el alumno.
+
+## Incidencia de entorno — versión de API Docker y Testcontainers
+
+Durante las pruebas de integración, Docker Engine 29 requería una API mínima 1.44, mientras que la versión de Docker Java usada por Testcontainers 1.x intentaba negociar una API anterior. Se actualizó Testcontainers a 1.21.3 y se fijó `api.version=1.44` en la configuración de Docker Java del proyecto; con ese ajuste `mvn test` pudo ejecutar los tests de integración MySQL. Es una incompatibilidad del entorno de pruebas, no un fallo de la lógica DAO.
 
 ## Errores corregidos manualmente por el alumno
