@@ -104,6 +104,47 @@ class EquipoServiceTest {
     }
 
     @Test
+    void actualizarEquipo_entrenadorActualizaDatosYConservaCreador() {
+        entrenador(3L, 1L);
+        when(equipoDao.update(any(Equipo.class))).thenReturn(1);
+
+        var actualizado = equipoService.actualizarEquipo(1L, 3L, new GuardarEquipoDto("Minibasket", "Cadete"));
+
+        assertEquals("Minibasket", actualizado.nombre());
+        assertEquals("Cadete", actualizado.categoria());
+        verify(equipoDao).update(new Equipo(3L, "Minibasket", "Cadete", 1L));
+    }
+
+    @Test
+    void actualizarEquipo_jugadorNoPuedeEditar_lanzaForbiddenException() {
+        when(equipoDao.findById(3L)).thenReturn(Optional.of(new Equipo(3L, "Minibasket", "U12", 1L)));
+        when(miembroDao.findById(3L, 2L)).thenReturn(Optional.of(new MiembroEquipo(3L, 2L, Rol.JUGADOR, 8)));
+
+        assertThrows(ForbiddenException.class,
+                () -> equipoService.actualizarEquipo(2L, 3L, new GuardarEquipoDto("Editado", "U12")));
+        verify(equipoDao, never()).update(any(Equipo.class));
+    }
+
+    @Test
+    void eliminarEquipo_entrenadorBorraElEquipo() {
+        entrenador(3L, 1L);
+        when(equipoDao.deleteById(3L)).thenReturn(1);
+
+        equipoService.eliminarEquipo(1L, 3L);
+
+        verify(equipoDao).deleteById(3L);
+    }
+
+    @Test
+    void eliminarEquipo_jugadorNoPuedeBorrar_lanzaForbiddenException() {
+        when(equipoDao.findById(3L)).thenReturn(Optional.of(new Equipo(3L, "Minibasket", "U12", 1L)));
+        when(miembroDao.findById(3L, 2L)).thenReturn(Optional.of(new MiembroEquipo(3L, 2L, Rol.JUGADOR, 8)));
+
+        assertThrows(ForbiddenException.class, () -> equipoService.eliminarEquipo(2L, 3L));
+        verify(equipoDao, never()).deleteById(3L);
+    }
+
+    @Test
     void listarEquipos_devuelveRolYTotalesPorEquipo() {
         Equipo equipo = new Equipo(3L, "Minibasket", "U12", 1L);
         when(usuarioDao.findById(1L)).thenReturn(Optional.of(new Usuario(1L, "Carlos", "carlos@example.com")));

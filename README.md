@@ -6,7 +6,7 @@ La aplicación está desarrollada con Java 17, Servlets Jakarta sobre Tomcat 10.
 
 ## Funcionalidades
 
-- Crear equipos y administrar sus miembros y dorsales.
+- Crear equipos, editar sus datos y eliminarlos; administrar sus miembros y dorsales.
 - Crear, consultar y gestionar entrenamientos y partidos.
 - Responder y actualizar la asistencia a eventos y consultar el resumen de respuestas.
 - Iniciar una sesión de demostración por email y cambiar entre los usuarios de ejemplo.

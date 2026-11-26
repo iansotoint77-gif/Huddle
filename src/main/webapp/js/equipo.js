@@ -17,9 +17,26 @@ function renderCrumb(team) {
 }
 
 function createHeader(team, role) {
-    const heading = element('div', 'row');
-    heading.append(element('h1', '', team.nombre));
-    heading.append(element('span', `chip ${role === 'ENTRENADOR' ? 'coach' : 'outline'}`, roleLabel(role)));
+    const heading = element('div', 'row-between mobile-stack');
+    const identity = element('div', 'row');
+    identity.append(element('h1', '', team.nombre));
+    identity.append(element('span', `chip ${role === 'ENTRENADOR' ? 'coach' : 'outline'}`, roleLabel(role)));
+    heading.append(identity);
+    if (role === 'ENTRENADOR') {
+        const actions = element('div', 'table-actions');
+        const edit = element('a', 'btn sec small-btn', 'Editar equipo');
+        edit.href = `equipo-nuevo.html?equipo=${encodeURIComponent(team.id)}`;
+        actions.append(edit, button('Eliminar equipo', 'btn danger small-btn', async () => {
+            if (!confirmDelete(`¿Eliminar «${team.nombre}» y todos sus eventos y respuestas?`)) return;
+            try {
+                await api.deleteTeam(team.id);
+                window.location.assign('equipos.html');
+            } catch (error) {
+                showToast(errorMessage(error), 'error');
+            }
+        }));
+        heading.append(actions);
+    }
     return heading;
 }
 

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#5b5bd6">
-    <title>Huddle · Crear equipo</title>
+    <title>Huddle · Equipo</title>
     <link rel="stylesheet" href="css/styles.css">
     <script type="module" src="js/equipo-nuevo.js"></script>
 </head>
@@ -26,8 +26,9 @@
     </div>
 </header>
 <main class="content">
-    <nav class="crumb" aria-label="Migas de pan"><a href="equipos.html">Mis equipos</a> / Nuevo equipo</nav>
-    <h1>Crear equipo</h1>
+    <nav id="team-crumb" class="crumb" aria-label="Migas de pan"><a href="equipos.html">Mis equipos</a> / Nuevo equipo</nav>
+    <h1 id="form-title">Crear equipo</h1>
+    <div id="loading-state" hidden></div>
     <form id="team-form" class="card" style="width:min(100%, 560px)">
         <div class="field">
             <label for="team-name">Nombre del equipo *</label>
@@ -47,7 +48,7 @@
             </select>
             <span class="field-error"></span>
         </div>
-        <div class="banner info">Al crear el equipo serás su entrenador y administrador.</div>
+        <div id="team-info" class="banner info">Al crear el equipo serás su entrenador y administrador.</div>
         <div id="form-alert" class="banner" role="alert" hidden></div>
         <div class="form-actions">
             <a class="btn sec" href="equipos.html">Cancelar</a>

@@ -54,6 +54,17 @@ public final class EquipoServlet extends BaseServlet {
     }
 
     @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String[] path = path(request);
+        if (path.length == 1) {
+            writeJson(response, equipoService().actualizarEquipo(usuarioId(request), id(path[0]),
+                    JsonUtil.read(request, GuardarEquipoDto.class)));
+            return;
+        }
+        throw new NotFoundException("No existe la ruta solicitada.");
+    }
+
+    @Override
     protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String[] path = path(request);
         if (path.length == 3 && "miembros".equals(path[1])) {
@@ -67,7 +78,11 @@ public final class EquipoServlet extends BaseServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String[] path = path(request);
-        if (path.length == 3 && "miembros".equals(path[1])) {
+        if (path.length == 1) {
+            equipoService().eliminarEquipo(usuarioId(request), id(path[0]));
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return;
+        } else if (path.length == 3 && "miembros".equals(path[1])) {
             equipoService().eliminarMiembro(usuarioId(request), id(path[0]), id(path[2]));
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return;

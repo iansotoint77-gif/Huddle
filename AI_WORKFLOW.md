@@ -192,4 +192,25 @@ Completar solo este archivo con los prompts clave, decisiones arquitectónicas, 
 
 Durante las pruebas de integración, Docker Engine 29 requería una API mínima 1.44, mientras que la versión de Docker Java usada por Testcontainers 1.x intentaba negociar una API anterior. Se actualizó Testcontainers a 1.21.3 y se fijó `api.version=1.44` en la configuración de Docker Java del proyecto; con ese ajuste `mvn test` pudo ejecutar los tests de integración MySQL. Es una incompatibilidad del entorno de pruebas, no un fallo de la lógica DAO.
 
+## Fase 6C — Auditoría de rúbrica y CRUD
+
+### Prompt
+
+Auditar relaciones y acciones referenciales de `db/init.sql`, DAO JDBC y cierre de recursos, configuración de credenciales, DTOs y códigos HTTP, Compose, archivos de entrega y restos de la plantilla; completar el CRUD de equipos y eventos en la web/API si faltaba y verificar persistencia, health y tests.
+
+### Decisiones y cambios
+
+- `docker-compose.yml` exige ahora las variables de base de datos en vez de recurrir a contraseñas predeterminadas. Se cambió el healthcheck a TCP en `127.0.0.1`: el chequeo anterior por `localhost` podía aceptar el MySQL temporal usado durante la inicialización, antes de que el listener TCP definitivo estuviera listo para HikariCP.
+- La API no tenía `PUT` ni `DELETE` para equipos. Se añadieron `EquipoService.actualizarEquipo/eliminarEquipo`, las rutas correspondientes en `EquipoServlet` y los métodos del wrapper frontend; edición y borrado requieren rol `ENTRENADOR`, y la edición conserva el creador original.
+- `equipo-nuevo.html`/`equipo-nuevo.js` reutilizan el formulario para crear o editar según `?equipo={id}`, cargan detalle y muestran errores recuperables. `equipo.js` presenta acciones de edición y borrado solo al entrenador y advierte que borrar un equipo elimina sus eventos y respuestas asociados.
+- Se añadieron cuatro pruebas Mockito de servicio para edición y borrado, tanto de entrenador como de jugador sin permiso.
+
+### Resultado y validación
+
+La revisión confirmó cinco tablas con relaciones 1:N y N:M, claves foráneas con `ON DELETE`/`ON UPDATE` explícitos, SQL JDBC mediante `PreparedStatement` y recursos en try-with-resources, configuración DB desde entorno, DTOs en la API, `.gitignore`/`.env.example` y Compose con healthcheck, `service_healthy`, red y volumen nombrado. No quedan clases del paquete de plantilla en el código; su nombre solo aparece en este historial para registrar que se eliminó.
+
+`docker compose down -v` seguido de `docker compose up --build -d` inicializó MySQL healthy y `/api/health` respondió 200. Un equipo creado por cURL (id 5) sobrevivió a `docker compose down` sin `-v` y a otro `up --build -d`; volvió a responder en el listado junto con health 200. El CRUD API de equipo y evento devolvió respectivamente 201/200/200/204; los detalles tras borrar dieron 404 y la edición por un jugador devolvió 403. `mvn test` finalizó en `BUILD SUCCESS`: 60 tests, 0 fallos, 0 errores y 0 omitidos; todos los módulos JS pasaron `node --check`.
+
+La revisión interactiva con navegador y consola no se realizó; se comprobaron las páginas/recursos servidos, el JavaScript sintácticamente y los flujos API por HTTP. El equipo de persistencia id 5 se deja en la BD para que la conservación del volumen sea observable.
+
 ## Errores corregidos manualmente por el alumno

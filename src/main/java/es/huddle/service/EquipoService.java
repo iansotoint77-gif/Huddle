@@ -92,6 +92,27 @@ public final class EquipoService {
         }
     }
 
+    public EquipoDto actualizarEquipo(long usuarioId, long equipoId, GuardarEquipoDto dto) {
+        Equipo equipo = requireTrainer(equipoId, usuarioId);
+        if (dto == null) {
+            throw new ValidationException("Los datos del equipo son obligatorios.");
+        }
+        String nombre = ServiceValidation.required(dto.nombre(), "nombre", 120);
+        String categoria = ServiceValidation.required(dto.categoria(), "categoría", 80);
+        Equipo actualizado = new Equipo(equipo.id(), nombre, categoria, equipo.creadorId());
+        if (equipoDao.update(actualizado) == 0 && equipoDao.findById(equipoId).isEmpty()) {
+            throw new NotFoundException("No existe el equipo.");
+        }
+        return EquipoMapper.toDto(actualizado);
+    }
+
+    public void eliminarEquipo(long usuarioId, long equipoId) {
+        requireTrainer(equipoId, usuarioId);
+        if (equipoDao.deleteById(equipoId) == 0) {
+            throw new NotFoundException("No existe el equipo.");
+        }
+    }
+
     public EquipoDetalleDto obtenerEquipo(long usuarioId, long equipoId) {
         Equipo equipo = equipoDao.findById(equipoId)
                 .orElseThrow(() -> new NotFoundException("No existe el equipo."));
