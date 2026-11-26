@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#182440">
+    <title>Huddle · Mis equipos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/equipos.js"></script>
+</head>
+<body>
+<header class="nav">
+    <a class="logo" href="equipos.html" aria-label="Huddle, inicio">H</a>
+    <a class="brand" href="equipos.html">Huddle</a>
+    <a class="navlink" href="equipos.html">Mis equipos</a>
+    <span class="nav-spacer"></span>
+    <button class="mobile-menu" type="button" aria-expanded="false" aria-label="Abrir menú">≡</button>
+    <div class="nav-user"><label for="current-user">Usuario actual</label><select id="current-user" aria-label="Cambiar usuario actual"></select></div>
+</header>
+<main class="content">
+    <div class="row-between mobile-stack">
+        <h1>Mis equipos</h1>
+        <a class="btn" href="equipo-nuevo.html">+ Crear equipo</a>
+    </div>
+    <p class="muted">Equipos en los que participas y tu rol en cada uno.</p>
+    <div id="teams-list" class="card-grid" aria-live="polite"></div>
+</main>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#182440">
+    <title>Huddle · Asistencia</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/evento.js"></script>
+</head>
+<body>
+<header class="nav">
+    <a class="logo" href="equipos.html" aria-label="Huddle, inicio">H</a>
+    <a class="brand" href="equipos.html">Huddle</a>
+    <a class="navlink" href="equipos.html">Mis equipos</a>
+    <span class="nav-spacer"></span>
+    <button class="mobile-menu" type="button" aria-expanded="false" aria-label="Abrir menú">≡</button>
+    <div class="nav-user"><label for="current-user">Usuario actual</label><select id="current-user" aria-label="Cambiar usuario actual"></select></div>
+</header>
+<main class="content">
+    <nav id="event-crumb" class="crumb desktop-event-crumb" aria-label="Migas de pan"><a href="equipos.html">Mis equipos</a></nav>
+    <nav id="event-mobile-crumb" class="crumb mobile-event-crumb" aria-label="Volver al equipo"></nav>
+    <div id="event-page" aria-live="polite"></div>
+</main>
+</body>
+</html>

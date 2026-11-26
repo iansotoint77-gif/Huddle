@@ -83,4 +83,21 @@ Implementar la Fase 4: servlets JSON para los endpoints REST, filtro `X-Usuario-
 
 `mvn test` compiló con Java 17 y terminó correctamente: 49 tests, 0 fallos, 0 errores y 0 omitidos. `docker compose up --build -d` reconstruyó la aplicación y dejó MySQL healthy, Tomcat y Adminer iniciados. Las pruebas HTTP devolvieron 200 en salud, listados y detalles; 201 en creación de evento y miembro con `Location`; 204 al borrar evento y miembro; 400 por cabecera ausente y validación de partido; 403 al crear como jugador; 404 para evento inexistente; y 409 por email/miembro duplicado. Se comprobó también que los votos se actualizan con PUT y se validó/limpió los recursos de prueba.
 
+## Fase 5 — Frontend
+
+### Prompt
+
+Implementar únicamente el frontend HTML/CSS/JavaScript nativo de la Fase 5, conectado a la API, fiel a los diez wireframes, paleta y requisitos responsive/estados; levantar Compose y entregar la URL de revisión, sin iniciar la Fase 6.
+
+### Decisiones de arquitectura
+
+- Se crearon páginas HTML semánticas y módulos ES por vista; `api.js` centraliza `fetch`, `X-Usuario-Id`, errores tipados y rutas, mientras `ui.js` concentra carga, vacío, errores, selección de usuario, mensajes y confirmaciones.
+- Los datos de API se insertan con `textContent`/nodos DOM, nunca con `innerHTML`; el usuario actual queda en `localStorage` y se envía en cada petición autenticada.
+- La creación de equipo usa un selector de categorías y los eventos controles segmentados, siguiendo los controles dibujados en los wireframes. La asistencia adapta su jerarquía entre escritorio y móvil; el filtro de estados del entrenador se implementa en cliente sobre el resumen recibido.
+- El menú móvil compacta la cabecera y permite desplegar navegación y selector de usuario; las notas amarillas de los wireframes se trataron como anotaciones, no como elementos de interfaz.
+
+### Resultado
+
+Se implementaron las seis vistas (selector de usuario, equipos, equipo/eventos, plantilla, formularios de alta/edición y asistencia por rol), con operaciones CRUD y estados de carga, vacío, validación, error y éxito. Los ocho módulos pasaron `node --check`; `mvn -DskipTests package` y `docker compose up --build -d` finalizaron correctamente. Compose quedó con app y Adminer activos y MySQL healthy; `/`, `/evento.html`, CSS/JS y `/api/health` respondieron HTTP 200, y los payloads de equipo y asistencia de jugador/entrenador se comprobaron con HTTP 200. URL de revisión: `http://localhost:8080/`. La prueba interactiva completa de navegador/consola queda pendiente: Playwright no está instalado y Edge headless no devolvió un DOM útil; no se inició la Fase 6.
+
 ## Errores corregidos manualmente por el alumno

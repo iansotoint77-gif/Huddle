@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#182440">
+    <title>Huddle · Elige tu usuario</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/index.js"></script>
+</head>
+<body>
+<header class="nav">
+    <span class="logo" aria-hidden="true">H</span>
+    <a class="brand" href="index.html">Huddle</a>
+    <span class="nav-spacer"></span>
+    <span class="navlink">Sin sesión</span>
+</header>
+<main class="content narrow login-wrap">
+    <section class="card login-card" aria-labelledby="page-title">
+        <h1 id="page-title" style="font-size:24px">Elige tu usuario</h1>
+        <p class="muted">Login simulado: no hay contraseña. El frontend guarda el usuario seleccionado y envía su id en la cabecera <code>X-Usuario-Id</code>.</p>
+        <div id="users-state" aria-live="polite"></div>
+        <div id="user-list" class="column" style="gap:8px"></div>
+        <div class="row-between">
+            <button id="toggle-create-user" class="btn sec" type="button">+ Crear usuario</button>
+            <button id="enter-app" class="btn" type="button" disabled>Entrar</button>
+        </div>
+        <form id="create-user-form" class="column inline-form" style="gap:12px" hidden>
+            <h2>Crear usuario</h2>
+            <div class="field">
+                <label for="user-name">Nombre *</label>
+                <input id="user-name" name="nombre" autocomplete="name" maxlength="120" required>
+                <span class="field-error"></span>
+            </div>
+            <div class="field">
+                <label for="user-email">Email *</label>
+                <input id="user-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+                <span class="field-error"></span>
+            </div>
+            <div id="form-alert" class="banner" role="alert" hidden></div>
+            <div class="form-actions">
+                <button id="cancel-create-user" class="btn sec" type="button">Cancelar</button>
+                <button id="save-user" class="btn" type="submit">Crear usuario</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

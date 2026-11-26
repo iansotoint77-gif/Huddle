@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#182440">
+    <title>Huddle · Nuevo evento</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/evento-nuevo.js"></script>
+</head>
+<body>
+<header class="nav">
+    <a class="logo" href="equipos.html" aria-label="Huddle, inicio">H</a>
+    <a class="brand" href="equipos.html">Huddle</a>
+    <a class="navlink" href="equipos.html">Mis equipos</a>
+    <span class="nav-spacer"></span>
+    <button class="mobile-menu" type="button" aria-expanded="false" aria-label="Abrir menú">≡</button>
+    <div class="nav-user"><label for="current-user">Usuario actual</label><select id="current-user" aria-label="Cambiar usuario actual"></select></div>
+</header>
+<main class="content">
+    <nav id="event-crumb" class="crumb" aria-label="Migas de pan"><a href="equipos.html">Mis equipos</a></nav>
+    <h1 id="form-title">Nuevo evento</h1>
+    <div id="loading-state" aria-live="polite"></div>
+    <form id="event-form" class="card" style="width:min(100%, 640px)" hidden>
+        <div class="field">
+            <label for="event-type">Tipo *</label>
+            <div class="type-options" role="radiogroup" aria-label="Tipo de evento">
+                <button id="type-training" class="btn sec type-option" type="button" aria-pressed="true">Entrenamiento</button>
+                <button id="type-match" class="btn sec type-option" type="button" aria-pressed="false">Partido</button>
+            </div>
+            <input id="event-type" name="tipo" type="hidden" value="ENTRENAMIENTO">
+            <span class="field-error"></span>
+        </div>
+        <div class="field">
+            <label for="event-title">Título *</label>
+            <input id="event-title" name="titulo" maxlength="160" placeholder="Ej. Entrenamiento de tiro" required>
+            <span class="field-error"></span>
+        </div>
+        <div class="form-row">
+            <div class="field">
+                <label for="event-date">Fecha *</label>
+                <input id="event-date" name="fecha" type="date" required>
+                <span class="field-error"></span>
+            </div>
+            <div class="field">
+                <label for="event-time">Hora *</label>
+                <input id="event-time" name="hora" type="time" required>
+                <span class="field-error"></span>
+            </div>
+        </div>
+        <div class="field">
+            <label for="event-place">Lugar *</label>
+            <input id="event-place" name="lugar" maxlength="160" placeholder="Pabellón Municipal" required>
+            <span class="field-error"></span>
+        </div>
+        <div id="rival-field" class="field" hidden>
+            <label for="event-rival">Rival *</label>
+            <input id="event-rival" name="rival" maxlength="120" placeholder="Nombre del rival">
+            <span class="field-error"></span>
+        </div>
+        <div id="form-alert" class="banner" role="alert" hidden></div>
+        <div class="form-actions">
+            <a id="cancel-event" class="btn sec" href="equipos.html">Cancelar</a>
+            <button id="save-event" class="btn" type="submit">Guardar evento</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

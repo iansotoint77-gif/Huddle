@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#182440">
+    <title>Huddle · Crear equipo</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/equipo-nuevo.js"></script>
+</head>
+<body>
+<header class="nav">
+    <a class="logo" href="equipos.html" aria-label="Huddle, inicio">H</a>
+    <a class="brand" href="equipos.html">Huddle</a>
+    <a class="navlink" href="equipos.html">Mis equipos</a>
+    <span class="nav-spacer"></span>
+    <button class="mobile-menu" type="button" aria-expanded="false" aria-label="Abrir menú">≡</button>
+    <div class="nav-user"><label for="current-user">Usuario actual</label><select id="current-user" aria-label="Cambiar usuario actual"></select></div>
+</header>
+<main class="content">
+    <nav class="crumb" aria-label="Migas de pan"><a href="equipos.html">Mis equipos</a> / Nuevo equipo</nav>
+    <h1>Crear equipo</h1>
+    <form id="team-form" class="card" style="width:min(100%, 560px)">
+        <div class="field">
+            <label for="team-name">Nombre del equipo *</label>
+            <input id="team-name" name="nombre" maxlength="120" placeholder="Ej. Minibasket 2016" autocomplete="organization" required>
+            <span class="field-error"></span>
+        </div>
+        <div class="field">
+            <label for="team-category">Categoría *</label>
+            <select id="team-category" name="categoria" required>
+                <option value="" disabled selected>Seleccionar categoría</option>
+                <option value="Minibasket">Minibasket</option>
+                <option value="Alevín">Alevín</option>
+                <option value="Infantil">Infantil</option>
+                <option value="Cadete">Cadete</option>
+                <option value="Junior">Junior</option>
+                <option value="Senior">Senior</option>
+            </select>
+            <span class="field-error"></span>
+        </div>
+        <div class="banner info">Al crear el equipo serás su entrenador y administrador.</div>
+        <div id="form-alert" class="banner" role="alert" hidden></div>
+        <div class="form-actions">
+            <a class="btn sec" href="equipos.html">Cancelar</a>
+            <button id="save-team" class="btn" type="submit">Crear equipo</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
