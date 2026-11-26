@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#182440">
+    <title>Huddle · Iniciar sesión</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/login.js"></script>
+</head>
+<body>
+<header class="nav">
+    <span class="logo" aria-hidden="true">H</span>
+    <a class="brand" href="login.html">Huddle</a>
+</header>
+<main class="content narrow login-wrap">
+    <section class="card auth-card" aria-labelledby="page-title">
+        <h1 id="page-title">Inicia sesión</h1>
+        <p class="muted">Entra con el email de tu cuenta para gestionar tus equipos y eventos.</p>
+        <form id="login-form" class="column auth-form" novalidate>
+            <div class="field">
+                <label for="login-email">Email *</label>
+                <input id="login-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="tu@email.com" required>
+                <span class="field-error"></span>
+            </div>
+            <div id="form-alert" class="banner" role="alert" hidden></div>
+            <button id="login-button" class="btn full" type="submit">Entrar</button>
+        </form>
+        <p class="muted small">¿Aún no tienes cuenta? <a class="text-link" href="registro.html">Regístrate</a></p>
+        <p class="demo-note">Demo: pablo.gil@example.com</p>
+        <p class="muted small">Acceso simulado de demostración, sin contraseña ni autenticación real.</p>
+    </section>
+</main>
+</body>
+</html>

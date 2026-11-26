@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#182440">
+    <title>Huddle · Crear cuenta</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/registro.js"></script>
+</head>
+<body>
+<header class="nav">
+    <span class="logo" aria-hidden="true">H</span>
+    <a class="brand" href="login.html">Huddle</a>
+    <span class="nav-spacer"></span>
+    <a class="navlink" href="login.html">Iniciar sesión</a>
+</header>
+<main class="content narrow login-wrap">
+    <section class="card auth-card" aria-labelledby="page-title">
+        <h1 id="page-title">Crear cuenta</h1>
+        <p class="muted">Regístrate para empezar a usar Huddle con tu equipo.</p>
+        <form id="register-form" class="column auth-form" novalidate>
+            <div class="field">
+                <label for="register-name">Nombre *</label>
+                <input id="register-name" name="nombre" autocomplete="name" maxlength="120" placeholder="Tu nombre" required>
+                <span class="field-error"></span>
+            </div>
+            <div class="field">
+                <label for="register-email">Email *</label>
+                <input id="register-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="tu@email.com" required>
+                <span class="field-error"></span>
+            </div>
+            <div id="form-alert" class="banner" role="alert" hidden></div>
+            <button id="register-button" class="btn full" type="submit">Crear cuenta</button>
+        </form>
+        <p class="muted small">¿Ya tienes una cuenta? <a class="text-link" href="login.html">Inicia sesión</a></p>
+        <p class="muted small">Esta demo no utiliza contraseña ni autenticación real.</p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#182440">
+    <title>Huddle · Ayuda</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/ayuda.js"></script>
+</head>
+<body>
+<header class="nav">
+    <a class="logo" href="equipos.html" aria-label="Huddle, inicio">H</a>
+    <a class="brand" href="equipos.html">Huddle</a>
+    <a class="navlink" href="equipos.html">Mis equipos</a>
+    <span class="nav-spacer"></span>
+    <div class="account-menu">
+        <button id="account-toggle" class="account-toggle" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="account-dropdown">
+            <span id="account-avatar" class="account-avatar"></span><span id="account-name" class="account-name"></span><span aria-hidden="true">⌄</span>
+        </button>
+        <div id="account-dropdown" class="account-dropdown" role="menu" hidden>
+            <div class="account-profile"><span class="account-profile-label">Mi perfil</span><strong id="account-profile-name"></strong><span id="account-profile-email"></span></div>
+            <a role="menuitem" href="ajustes.html">Ajustes</a><a role="menuitem" href="como-funciona.html">Cómo funciona</a><a role="menuitem" href="ayuda.html">Ayuda</a>
+            <button id="logout-button" role="menuitem" class="logout-button" type="button">Cerrar sesión</button>
+        </div>
+    </div>
+</header>
+<main class="content narrow">
+    <nav class="crumb" aria-label="Migas de pan"><a href="equipos.html">Mis equipos</a> / Ayuda</nav>
+    <h1>Ayuda</h1>
+    <p class="muted">Respuestas rápidas a las dudas más frecuentes.</p>
+    <section class="faq-list" aria-label="Preguntas frecuentes">
+        <details class="faq-item"><summary>¿Cómo cambio de usuario?</summary><p>Cierra sesión desde el menú de tu perfil y vuelve a entrar con el email de la otra cuenta.</p></details>
+        <details class="faq-item"><summary>¿Cómo me uno a un equipo?</summary><p>El entrenador debe añadirte usando el email con el que te registraste y asignarte un dorsal.</p></details>
+        <details class="faq-item"><summary>¿Puedo cambiar mi respuesta?</summary><p>Sí. Abre el evento y selecciona otra opción de asistencia mientras el evento siga pendiente.</p></details>
+        <details class="faq-item"><summary>¿Cómo edito mis datos?</summary><p>Abre Ajustes desde el menú de tu perfil para modificar tu nombre. El email de la cuenta no se puede cambiar desde esta demo.</p></details>
+        <details class="faq-item"><summary>¿El acceso utiliza contraseña?</summary><p>No. Es una sesión simulada para demostración y no sustituye un sistema de autenticación real.</p></details>
+    </section>
+</main>
+</body>
+</html>

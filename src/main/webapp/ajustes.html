@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#182440">
+    <title>Huddle · Ajustes</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/ajustes.js"></script>
+</head>
+<body>
+<header class="nav">
+    <a class="logo" href="equipos.html" aria-label="Huddle, inicio">H</a>
+    <a class="brand" href="equipos.html">Huddle</a>
+    <a class="navlink" href="equipos.html">Mis equipos</a>
+    <span class="nav-spacer"></span>
+    <div class="account-menu">
+        <button id="account-toggle" class="account-toggle" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="account-dropdown">
+            <span id="account-avatar" class="account-avatar"></span><span id="account-name" class="account-name"></span><span aria-hidden="true">⌄</span>
+        </button>
+        <div id="account-dropdown" class="account-dropdown" role="menu" hidden>
+            <div class="account-profile"><span class="account-profile-label">Mi perfil</span><strong id="account-profile-name"></strong><span id="account-profile-email"></span></div>
+            <a role="menuitem" href="ajustes.html">Ajustes</a><a role="menuitem" href="como-funciona.html">Cómo funciona</a><a role="menuitem" href="ayuda.html">Ayuda</a>
+            <button id="logout-button" role="menuitem" class="logout-button" type="button">Cerrar sesión</button>
+        </div>
+    </div>
+</header>
+<main class="content narrow">
+    <nav class="crumb" aria-label="Migas de pan"><a href="equipos.html">Mis equipos</a> / Ajustes</nav>
+    <h1>Ajustes</h1>
+    <section class="card settings-card" aria-labelledby="profile-title">
+        <div>
+            <h2 id="profile-title">Mi perfil</h2>
+            <p class="muted small">Actualiza el nombre que aparece en tus equipos.</p>
+        </div>
+        <p class="profile-email"><span class="muted">Email</span><strong id="profile-email"></strong></p>
+        <form id="settings-form" class="column auth-form" novalidate>
+            <div class="field">
+                <label for="profile-name">Nombre *</label>
+                <input id="profile-name" name="nombre" autocomplete="name" maxlength="120" required>
+                <span class="field-error"></span>
+            </div>
+            <div id="form-alert" class="banner" role="alert" hidden></div>
+            <div class="form-actions">
+                <a class="btn sec" href="equipos.html">Cancelar</a>
+                <button id="save-settings" class="btn" type="submit">Guardar cambios</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>
